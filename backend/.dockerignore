@@ -1,0 +1,19 @@
+# MySQL volume data
+dados_mysql/
+
+# Node
+node_modules/
+npm-debug.log
+
+# Git
+.git/
+.gitignore
+
+# Env (opcional, já que o compose injeta)
+# .env
+
+# Build output
+dist/
+
+# Testes
+coverage/

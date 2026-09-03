@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: conecthus-user-api-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: conecthus_user
+      TZ: America/Manaus
+    ports:
+      - '3307:3306'
+    volumes:
+      - ./dados_mysql:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-proot']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: conecthus-user-api
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_DATABASE: conecthus_user
+      PORT: 4050
+      BACKEND_PORT: 4050
+    ports:
+      - '${DOCKER_PORT}:4050'
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  default:
+    driver: bridge
